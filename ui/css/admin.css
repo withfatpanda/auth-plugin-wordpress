@@ -1,0 +1,79 @@
+fieldset.fp-auth {
+	position: relative;
+	border: none;
+	margin: 10px 0;
+	padding-top: 20px;
+	display: inline-block; 
+	width: 100%;
+}
+
+fieldset.fp-auth .help-block {
+	margin-bottom: 10px;
+	text-align: center;
+}
+
+fieldset.fp-auth legend {
+	display: block;
+	width: 100%;
+	text-align: center;
+	font-size: 24px;
+	position: relative;
+	z-index: 1;
+}
+
+fieldset.fp-auth legend span {
+	display: inline-block;
+	background-color: #fff;
+ 	padding: 0 15px;
+}
+
+fieldset.fp-auth legend:after {
+	content: " ";
+	display: block;
+	width: 100%;
+	border-top: 2px solid #eee;
+	position: absolute;
+	top: 50%;
+	left: 0;
+	right: 0;
+	z-index: -1;
+}
+
+fieldset.fp-auth .social-buttons {
+	display: flex;
+	margin: 0 -5px;
+	justify-content: space-between;
+	flex-wrap: wrap;
+}
+
+fieldset.fp-auth .social-buttons .social-button {
+	display: block;
+	flex: 1 0;
+	text-align: center;
+	font-size: 24px;
+	margin: 0 5px;
+	padding: 15px 20px;
+	background-color: #eee;
+	text-decoration: none;
+	margin-bottom: 10px;
+}
+
+fieldset.fp-auth .social-buttons .social-button:hover {
+	color: #fff;
+}
+
+fieldset.fp-auth .social-button-facebook:hover {
+	background-color: #3b5998;
+}
+
+fieldset.fp-auth .social-button-twitter:hover {
+	background-color: #1dcaff;
+}
+
+fieldset.fp-auth .social-button-google:hover {
+	background-color: #d34836;
+}
+
+fieldset.fp-auth .social-button-github:hover {
+	background-color: #d34836;
+}

@@ -1,0 +1,7 @@
+# Vendor (e.g., COmposer)
+composer.lock
+vendor/*
+!vendor/.gitkeep
+
+# Workbench
+studio.json
