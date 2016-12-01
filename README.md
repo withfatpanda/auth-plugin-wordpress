@@ -1,14 +1,12 @@
-![alt text](https://github.com/withfatpanda/auth-plugin-wordpress/raw/master/assets/screenshot-1.png "Login")
-
 # Add social login and more to WordPress.
 
-#### This project is a work in progress. It should be considered an unstable experiment until otherwise advertised herein&mdash;not for production use. Thank you.
+This project is a work in progress. It should be considered an unstable experiment until otherwise advertised herein&mdash;not for production use. Thank you.
 
 ---
 
 This plugin expands WordPress' core authentication features:
 
-* Log in or register using accounts on [almost 100 social networks](https://socialiteproviders.github.io/)
+* Log in or register using accounts on [almost 100 social networks](https://socialiteproviders.github.io/) ([screenshot](https://github.com/withfatpanda/auth-plugin-wordpress/raw/master/assets/screenshot-1.png))
 * Associate social network accounts with existing WordPress Users
 
 Features in our roadmap:
