@@ -2,9 +2,10 @@ fieldset.fp-auth {
 	position: relative;
 	border: none;
 	margin: 10px 0;
-	padding-top: 20px;
+	padding: 20px 0;
 	display: inline-block; 
 	width: 100%;
+	border-bottom: 2px solid #eee;
 }
 
 fieldset.fp-auth .help-block {

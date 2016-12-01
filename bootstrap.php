@@ -18,6 +18,5 @@ require_once __DIR__.'/src/plugin.php';
 
 $plugin = new FatPanda\WordPress\Auth\Auth(__FILE__);
 
-// Using custom data types? Register them here:
-// $plugin->registerCustomPostType( Root\FooBar\Models\Person::class );
-// $plugin->registerTaxonomy( Root\FooBar\Models\Department::class );
+$plugin->register( Laravel\Socialite\SocialiteServiceProvider::class );
+$plugin->alias( 'Laravel\Socialite\Contracts\Factory', 'socialite' );
