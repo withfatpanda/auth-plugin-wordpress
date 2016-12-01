@@ -1,4 +1,5 @@
 # Add social login and more to WordPress.
+[![Packagist](https://img.shields.io/packagist/v/withfatpanda/auth-plugin-wordpress.svg?style=flat-square)](https://packagist.org/packages/withfatpanda/auth-plugin-wordpress)
 
 This project is a work in progress. It should be considered an unstable experiment until otherwise advertised herein&mdash;not for production use. Thank you.
 
