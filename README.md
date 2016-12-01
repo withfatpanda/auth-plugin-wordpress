@@ -1,5 +1,6 @@
 # Add social login and more to WordPress.
 [![Packagist](https://img.shields.io/packagist/v/withfatpanda/auth-plugin-wordpress.svg?style=flat-square)](https://packagist.org/packages/withfatpanda/auth-plugin-wordpress)
+[![Patreon](https://img.shields.io/badge/patreon-donate-yellow.svg)](https://patreon.com/withfatpanda)
 
 This project is a work in progress. It should be considered an unstable experiment until otherwise advertised herein&mdash;not for production use. Thank you.
 
@@ -30,6 +31,53 @@ This plugin is free to use in any project (public, private, non-profit and for-p
 Use Composer to add this plugin as a dependency to your Bedrock-based WordPress installation:
 
 `composer require withfatpanda/auth-plugin-wordpress`
+
+## Configuration
+
+For each third-party service you wish to employ in authentication, you will need a driver, 
+a client ID, and a client secret.
+
+Out of the box, this plugin makes available six drivers: `facebook`, `twitter`, `linkedin`, `google`, `github`, and `bitbucket`. 
+
+**Note:** In addition to these built-in drivers, there are almost 100 socialite drivers available through the community-driven [Socialite Providers](https://socialiteproviders.github.io) project, but to use any one of them, you must do some additional setup work (see *Using Third-Party Providers* below).
+
+For each provider you wish to enable for authentication:
+
+1. Create a relationship with the provider; for example, if you want to enable Facebook as a login provider,
+you must first create a Facebook app. This process will be slightly different for each provider, and is beyond the scope of this documentation. Good luck!
+
+2. Get the public ID and secret key for each of your apps; again, this is outside the scope of this documentation.
+
+3. Install these values into your [Bedrock environment](https://roots.io/bedrock/docs/environment-variables/) as follows:
+
+  ```
+  SERVICES_FACEBOOK_CLIENT_ID=Public ID
+  SERVICES_FACEBOOK_CLIENT_SECRET=Secret Key
+  ```
+
+  Where `FACEBOOK` should be the name of the driver you're configuring.
+
+4. Also in your Bedrock environment, you will need to install a list of the drivers you are using, as follows:
+
+  ```
+  SOCIALITE_PROVIDERS=facebook,twitter,google
+  ```
+
+5. If you haven't done so yet, activate the plugin!
+
+  ```
+  wp plugin activate auth-plugin-wordpress
+  ```
+
+6. Flush your cached rewrite rules; this plugin adds two rewrite rules&mdash;one for inititing the OAuth flow, and another for handling the response from the auth providers. You can flush your rewrite rules with WP-CLI, as follows:
+
+  ```
+  wp rewrite flush
+  ```
+
+### Using Third-Party Providers
+
+To be written.
 
 ## About This Project
 

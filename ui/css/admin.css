@@ -43,38 +43,52 @@ fieldset.fp-auth legend:after {
 fieldset.fp-auth .social-buttons {
 	display: flex;
 	margin: 0 -5px;
-	justify-content: space-between;
+	justify-content: center;
 	flex-wrap: wrap;
 }
 
 fieldset.fp-auth .social-buttons .social-button {
-	display: block;
-	flex: 1 0;
+	display: inline-block;
 	text-align: center;
 	font-size: 24px;
-	margin: 0 5px;
-	padding: 15px 20px;
+	width: 84px;
+	padding: 15px 0;
+	margin: 0 5px 12px;
 	background-color: #eee;
 	text-decoration: none;
-	margin-bottom: 10px;
 }
 
-fieldset.fp-auth .social-buttons .social-button:hover {
+fieldset.fp-auth .social-button:hover {
+	background-color: #0073aa;
 	color: #fff;
 }
 
 fieldset.fp-auth .social-button-facebook:hover {
 	background-color: #3b5998;
+	color: #fff;
 }
 
 fieldset.fp-auth .social-button-twitter:hover {
 	background-color: #1dcaff;
+	color: #fff;
 }
 
 fieldset.fp-auth .social-button-google:hover {
 	background-color: #d34836;
+	color: #fff;
 }
 
 fieldset.fp-auth .social-button-github:hover {
-	background-color: #d34836;
+	background-color: #111111;
+	color: #fff;
+}
+
+fieldset.fp-auth .social-button-linkedin:hover {
+	background-color: #0077b5;
+	color: #fff;
+}
+
+fieldset.fp-auth .social-button-bitbucket:hover {
+	background-color: #205081;
+	color: #fff;
 }

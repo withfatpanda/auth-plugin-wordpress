@@ -41,6 +41,15 @@ class Auth extends Plugin {
 		}
 	}
 
+	/**
+	 * Using the action "socialite_add_providers", we allow any other module
+	 * in WordPress to install additional providers into Socialite.
+	 */
+	function onPluginsLoaded()
+	{
+		do_action('socialite_add_providers', $this);
+	}
+
 	function onLoginEnqueueScripts()
 	{
 		?>
@@ -124,31 +133,103 @@ class Auth extends Plugin {
 	}
 
 	/**
+	 * Get the Client ID for the given driver; searches first in environment, second
+	 * in global options, and finally filters the result by "socialite_client_id"
+	 * @param string The driver, e.g., "facebook"
+	 * @return string The client ID
+	 */
+	protected function getProviderClientId($driver)
+	{
+		$environment_name = 'SERVICES_' . strtoupper($driver) . '_CLIENT_ID';
+		$option_name = 'socialite_' . strtolower($driver) . '_client_id';
+		return apply_filters('socialite_client_id', getenv($environment_name) ?: get_option($option_name), $driver);
+	}
+
+	/**
+	 * Get the Client Secret for the given driver; searches first in environment, second
+	 * in global options, and finally filters the result by "socialite_client_secret"
+	 * @param string The driver, e.g., "facebook"
+	 * @return string The client ID
+	 */
+	protected function getProviderClientSecret($driver)
+	{
+		$environment_name = 'SERVICES_' . strtoupper($driver) . '_CLIENT_SECRET';
+		$option_name = 'socialite_' . strtolower($driver) . '_client_secret';
+		return apply_filters('socialite_client_secret', getenv($environment_name) ?: get_option($option_name), $driver);
+	}
+
+	/**
+	 * Get a name for the service identify by the given driver.
+	 * @param string The driver, e.g., "facebook"
+	 * @return string
+	 */
+	protected function getProviderName($driver)
+	{
+		return __( getenv('SERVICES_' . strtoupper($driver) . '_NAME') ?: strtoupper($driver), 'fp-auth' );
+	}
+
+	/**
+	 * Get a name for the service identify by the given driver.
+	 * @param string The driver, e.g., "facebook"
+	 * @return string
+	 */
+	protected function getProviderIcon($driver)
+	{
+		$hasFontAwesomeIcon = [ 'facebook', 'twitter', 'github', 'linkedin', 'google' ];
+		$defaultIcon = 'fa fa-plug';
+		if (in_array(strtolower($driver), $hasFontAwesomeIcon)) {
+			$defaultIcon = 'fa fa-' . strtolower($driver);
+		}
+		return apply_filters('socialite_icon', getenv('SERVICES_' . strtoupper($driver) . '_ICON') ?: $defaultIcon, $driver);
+	}
+
+	/**
+	 * Get a list of the driver names of providers that are enabled.
+	 * @return array
+	 */
+	protected function getEnabledProvidersList()
+	{
+		$stored = apply_filters('socialite_providers', getenv('SOCIALITE_PROVIDERS') ?: get_option('socialite_providers'));
+		return preg_split('/,\s*/', $stored);
+	}
+
+	/**
 	 * Allow for services to be configured from multiple data sources,
-	 * including the environment and the options table.
+	 * including the environment and the options table. The list of providers
+	 * is stored in a global option "socialite_providers"; filtered by a filter
+	 * of the same name. The list of provides can also be specified by a CSV
+	 * in the environment variable SOCIALITE_PROVIDERS; the environment variable
+	 * will take precedence over the global option, and the filter gets the last say.
+	 * The list of providers should be a comma-separated list of driver names, e.g.,
+	 * "facebook,twitter". For each provider, a Client ID and Client Secret will be
+	 * sought; finding both, the service will be added to the list of services
+	 * that users can use to login or register.
 	 * @return array
 	 */
 	protected function getServicesConfig()
 	{
 		$services = [];
 
-		$services['facebook'] = [
-			'name' => 'Facebook',
-			'client_id' => getenv('SERVICES_FACEBOOK_CLIENT_ID') ?: get_option('socialite_facebook_client_id'),
-			'client_secret' => getenv('SERVICES_FACEBOOK_CLIENT_SECRET') ?: get_option('socialite_facebook_client_secret'),
-			'redirect' => home_url('fp-auth/socialite/facebook/callback'),
-			'enabled' => true,
-			'icon' => 'fa fa-facebook'
-		];
+		$enabled = $this->getEnabledProvidersList(); ;
 
-		$services['twitter'] = [
-			'name' => 'Twitter',
-			'client_id' => getenv('SERVICES_TWITTER_CLIENT_ID') ?: get_option('socialite_twitter_client_id'),
-			'client_secret' => getenv('SERVICES_TWITTER_CLIENT_SECRET') ?: get_option('socialite_twitter_client_secret'),
-			'redirect' => home_url('fp-auth/socialite/twitter/callback'),
-			'enabled' => true,
-			'icon' => 'fa fa-twitter'
-		];
+		foreach($enabled as $driver) {
+
+			$id = $this->getProviderClientId($driver);
+			$secret = $this->getProviderClientSecret($driver);
+
+			if ($id && $secret) {
+
+				$services[$driver] = [
+					'name' => $this->getProviderName($driver),
+					'client_id' => $id,
+					'client_secret' => $secret,
+					'redirect' => home_url('fp-auth/socialite/' . strtolower($driver) . '/callback'),
+					'icon' => $this->getProviderIcon($driver),
+				];
+
+			}
+
+		}
 
 		return $services;
 	}
