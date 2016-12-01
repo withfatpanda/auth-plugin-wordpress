@@ -2,7 +2,7 @@
     "name": "withfatpanda/auth-plugin-wordpress",
     "description": "Expand the core auth and registration features of WordPress.",
     "type": "wordpress-plugin",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "license": "GPL2",
     "authors": [
         {
