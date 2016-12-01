@@ -83,7 +83,7 @@ To be written.
 
 This plugin is the first to be built with the [illuminate-wordpress](https://github.com/withfatpanda/illuminate-wordpress) project.
 
-illuminate-wordpress, powered by the [Laravel Framework](https://laravel.com), provides developers with an expressive, beautiful syntax for building faster for WordPress. Extending WordPress' REST API, defining custom data types and taxonomies, querying the database, and much more all made easier through a semantic, object-oriented API. The objective of illuminate-wordpress is to allow the entire community of Laravel developers to fall in love with WordPress the way that we have fallen in love with Laravel.
+illuminate-wordpress, powered by the [Laravel Framework](https://laravel.com), provides developers with an expressive, beautiful syntax for building faster for WordPress. Extending WordPress' REST API, defining custom data types and taxonomies, querying the database, and much more are all made easier through a semantic, object-oriented API. The objective of illuminate-wordpress is to allow the entire community of Laravel developers to fall in love with WordPress the way that we have fallen in love with Laravel.
 
 This project in particular depends heavily on [Laravel Socialite](https://github.com/laravel/socialite)&mdash;a library that handles almost all of the boilerplate social authentication code that all developers dread writing.
 
