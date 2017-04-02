@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v1.2.0
+
+* Refactor to upgrade from illuminate-wordpress ~1.0 to 1.4.*
+
+
 ## v1.0.2
 
 * Environment-based configuration of the built-in drivers now supported: `facebook`, `twitter`, `google`, `linkedin`, `github`, and `bitbucket`

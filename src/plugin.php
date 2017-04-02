@@ -1,52 +1,21 @@
 <?php
 namespace FatPanda\WordPress\Auth;
 
-use FatPanda\Illuminate\WordPress\Plugin;
 use Laravel\Socialite\AbstractUser;
 use Illuminate\Support\Str;
+use \FatPanda\Illuminate\WordPress\Plugin as BasePlugin;
 
-class Auth extends Plugin {
+class Plugin extends BasePlugin {
 	
-	/**
-	 * This function will be invoked on WordPress' "init" action; note
-	 * that text translation features have already been configured by the
-	 * baseclass: you don't need to do that yourself. 
-	 * @see https://codex.wordpress.org/Plugin_API/Action_Reference/init
-	 * @see https://codex.wordpress.org/Function_Reference/load_plugin_textdomain
-	 */
-	function onInit()
-	{
-		$token = $this->request->input('socialite');
-		if ($session = $this->getSavedSocialiteUser($token)) {
-			// XXX: This is dirty, dirty, dirty...
-			// If this ends up being unstable, introduce form post from callbacks
-			$_SERVER['REQUEST_METHOD'] = 'POST'; 
-			
-			// fill in default user_login
-			if (!$this->request->input('user_login')) {
-				// fall back is driver + id
-				$nickname = $session['driver'] . $session['user']->id;
-				// best solution is nickname from third-party
-				if (!empty($session['user']->nickname)) {
-					$nickname = Str::slug($session['user']->nickname, '');
-				} else if (!empty($session['user']->name)) {
-					$nickname = Str::slug($session['user']->name, '');
-				}
-
-				$_POST['user_login'] = $_REQUEST['user_login'] = $nickname;
-			}
-			if (!$this->request->input('user_email') && !empty($session['user']->email)) {
-				$_POST['user_email'] = $_REQUEST['user_email'] = $session['user']->email;
-			}
-		}
-	}
-
 	/**
 	 * Using the action "socialite_add_providers", we allow any other module
 	 * in WordPress to install additional providers into Socialite.
 	 */
 	function onPluginsLoaded()
 	{
+		$this->register( \Laravel\Socialite\SocialiteServiceProvider::class );
+		$this->alias( 'Laravel\Socialite\Contracts\Factory', 'socialite' );
+
 		do_action('socialite_add_providers', $this);
 	}
 
@@ -54,8 +23,21 @@ class Auth extends Plugin {
 	{
 		?>
 			<link rel="stylesheet" href="<?= $this->url('/node_modules/font-awesome/css/font-awesome.min.css') ?>">
-			<link rel="stylesheet" href="<?= $this->url('/ui/css/admin.css') ?>">
+			<link rel="stylesheet" href="<?= $this->url('/resources/css/admin.css') ?>">
 		<?php
+	}
+
+	function filterCommentFormDefaults($defaults)
+	{
+		$defaults;
+
+		ob_start();
+
+		$this->printSocialButtons($this->getServicesConfig(), __('Please login to post a comment.', 'fp-auth'), false);
+		
+		$defaults['must_log_in'] = ob_get_clean();
+
+		return $defaults;
 	}
 
 	/**
@@ -87,6 +69,37 @@ class Auth extends Plugin {
 						</style>
 					<?php
 				}
+
+				// fall back is driver + id
+				$nickname = $session['driver'] . $session['user']->id;
+				// best solution is nickname from third-party
+				if (!empty($session['user']->nickname)) {
+					$nickname = Str::slug($session['user']->nickname, '');
+				} else if (!empty($session['user']->name)) {
+					$nickname = Str::slug($session['user']->name, '');
+				}
+				$default_user_login = $nickname;
+
+				// generate a default user_email
+				$default_user_email = null;
+				if (!empty($session['user']->email)) {
+					$default_user_email = $session['user']->email;
+				}
+				
+				?>
+					<script type="text/javascript">
+						!function() {
+							var user_login = document.getElementById('user_login');
+							var user_email = document.getElementById('user_email');
+							if (!user_login.value) {
+								user_login.value = '<?php echo esc_js($default_user_login) ?>';
+							}
+							if (!user_email.value) {
+								user_email.value = '<?php echo esc_js($default_user_email) ?>';
+							}
+						}();
+					</script>
+				<?php
 			
 			} else {
 
@@ -111,13 +124,15 @@ class Auth extends Plugin {
 	/**
 	 * @return void
 	 */
-	protected function printSocialButtons($config, $help)
+	protected function printSocialButtons($config, $help, $separator = true)
 	{
 		?>
 			<fieldset class="fp-auth">
-				<legend>
-					<span>or</span>
-				</legend>
+				<?php if ($separator) { ?>
+					<legend>
+						<span>or</span>
+					</legend>
+				<?php } ?>
 				<div class="help-block"><?php echo $help ?></div>
 				<div class="social-buttons">
 					<?php foreach($config as $network => $service) { ?>
@@ -310,12 +325,18 @@ class Auth extends Plugin {
 
 		// if already connected, we'll just login
 		if ($connected) {
-			$user = get_user_by('ID', $connected->user_id);
-			wp_set_auth_cookie($user->ID);
-			do_action('wp_login', $user->user_login, $user);
-			return $user;
-
-		// otherwise, create a registration session	
+			// if the user doesn't exist, we need to clean it up
+			if (!$user = get_user_by('ID', $connected->user_id)) {
+				delete_user_meta($connection->user_id, $user_meta_key);
+			  return $this->saveSocialiteUserForLater($driver, $socialiteUser);
+			// otherwise, we log the user in
+			} else {
+				wp_set_auth_cookie($user->ID);
+				do_action('wp_login', $user->user_login, $user);
+				return $user;
+			}
+		// and if they're not connected, we save the session for later
+		// and (presumably) send the user along to registration
 		} else {
 			return $this->saveSocialiteUserForLater($driver, $socialiteUser);
 		}

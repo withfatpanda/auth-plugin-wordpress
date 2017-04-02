@@ -2,8 +2,8 @@
 /*
 Plugin Name: 		Auth
 Plugin URI:  		https://github.com/withfatpanda/auth-plugin-wordpress
-Description: 		Expand the core auth and registration features of WordPress.
-Version:     		1.0.0
+Description: 		Social login and registration, built with <a href="https://github.com/withfatpanda/bamboo">Bamboo</a> and powered by <a href="https://github.com/laravel/socialite">Laravel Socialite</a>
+Version:     		1.2.0
 Author:      		Fat Panda 
 Author URI:  		https://github.com/withfatpanda
 License:     		GPL2
@@ -12,13 +12,6 @@ Text Domain: 		fp-auth
 Domain Path: 		/resources/lang
 */
 
-if (file_exists( __DIR__.'/vendor/autoload.php' )) {
-	require_once( __DIR__.'/vendor/autoload.php' );
-}
+@include_once __DIR__.'/vendor/autoload.php';
 require_once __DIR__.'/src/functions.php';
-require_once __DIR__.'/src/plugin.php';
-
-$plugin = new FatPanda\WordPress\Auth\Auth(__FILE__);
-
-$plugin->register( Laravel\Socialite\SocialiteServiceProvider::class );
-$plugin->alias( 'Laravel\Socialite\Contracts\Factory', 'socialite' );
+FatPanda\Illuminate\WordPress\Plugin::bootstrap(__FILE__);

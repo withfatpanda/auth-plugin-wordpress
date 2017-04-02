@@ -36,6 +36,7 @@ $router->rewrite('/fp-auth/socialite/{driver}/callback', function($driver) use (
 				$result = $plugin->loginSocialiteUser($driver, $user);
 				if ($result instanceof \WP_User) {
 					wp_redirect($redirect_to);
+					
 				}	else {
 					wp_redirect(site_url('wp-login.php').'?'.http_build_query([
 						'action' => 'register',
